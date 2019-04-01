@@ -66,14 +66,16 @@ func find(fib *Fibonnaci, A, B string, searchingLocation uint64) byte {
 		// It definitely is in pos = pos -2
 		// Lets also correct 'searchingLocation' to proper 'pos'
 		decrease = (fib.get(pos-2-1)*lenA + fib.get(pos-1-1)*lenB)
+		fmt.Printf("pos: %d \tsearching loc.: %d \t", pos, searchingLocation)
 		if decrease > searchingLocation {
 			pos -= 1
+			fmt.Printf("BACK to pos: %d \t\t fib-pos: %d %d\n", pos, fib.get(pos-2-1)*lenA, fib.get(pos-1-1)*lenB)
+
 			continue
 		}
 
-		// fmt.Printf("pos: %d \tsearching loc.: %d \t", pos, searchingLocation)
 		searchingLocation = searchingLocation - decrease
-		// fmt.Printf("decrease by: %d \t\t fib-pos: %d %d\n", decrease, fib.get(pos-2-1)*lenA, fib.get(pos-1-1)*lenB)
+		fmt.Printf("decrease by: %d \t\t fib-pos: %d %d\n", decrease, fib.get(pos-2-1)*lenA, fib.get(pos-1-1)*lenB)
 		pos -= 2
 		if searchingLocation <= lenAB {
 			if pos%2 == 0 {
@@ -90,27 +92,36 @@ func find(fib *Fibonnaci, A, B string, searchingLocation uint64) byte {
 func main() {
 	// Global
 	fib := NewFibonnaci()
+	debug := true
+	if !debug {
+		// IO
+		var quantity int
+		var A, B string
+		var n uint64
 
-	// IO
-	// var quantity int
-	// var A, B string
-	// var n uint64
+		fmt.Scanf("%d", &quantity)
+		for i := 0; i < quantity; i++ {
+			fmt.Scanf("%s", &A)
+			fmt.Scanf("%s", &B)
+			fmt.Scanf("%d", &n)
 
-	// fmt.Scanf("%d", &quantity)
-	// for i := 0; i < quantity; i++ {
-	//  fmt.Scanf("%s", &A)
-	//  fmt.Scanf("%s", &B)
-	//  fmt.Scanf("%d", &n)
+			// Algorithm
+			fmt.Println(string(find(fib, A, B, n)))
+		}
+	} else {
+		// fmt.Printf("%s\n", string(find(fib, "abc", "def", 49)))
+		// fmt.Printf("%s\n", string(find(
+		//     fib,
+		//     "1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
+		//     "8214808651328230664709384460955058223172535940812848111745028410270193852110555964462294895493038196",
+		//     104683731294243150,
+		// )))
 
-	//  // Algorithm
-	//  fmt.Println(string(find(fib, A, B, n)))
-	// }
-
-	// fmt.Printf("%s\n", string(find(fib, "abc", "def", 49)))
-	fmt.Printf("%s\n", string(find(
-		fib,
-		"1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
-		"8214808651328230664709384460955058223172535940812848111745028410270193852110555964462294895493038196",
-		104683731294243150,
-	)))
+		fmt.Printf("%s\n", string(find(
+			fib,
+			"a",
+			"b",
+			50,
+		)))
+	}
 }

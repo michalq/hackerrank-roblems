@@ -82,14 +82,15 @@ func find(fib *Fibonnaci, A, B string, searchingLocation *big.Int) byte {
 			big.NewInt(0).Mul(fib.get(pos-2), lenB),
 		)
 
-		if decrease.Cmp(searchingLocation) == 1 { // decrease > searchingLocation
+		// fmt.Printf("pos: %d \tsearching loc.: %d \t", pos, searchingLocation)
+		if decrease.Cmp(searchingLocation) >= 0 { // decrease >= searchingLocation
 			pos -= 1
+			// fmt.Printf("BACK decrease: %d \t\t fib-pos: %d %d\n", decrease, fib.get(pos-2), fib.get(pos-2))
 			continue
 		}
 
-		// fmt.Printf("pos: %d \tsearching loc.: %d \t", pos, searchingLocation)
 		searchingLocation.Sub(searchingLocation, decrease)
-		// fmt.Printf("decrease by: %d \t\t fib-pos: %d %d\n", decrease, fib.get(pos-3), fib.get(pos-1-1))
+		// fmt.Printf("decrease: %d \t\t fib-pos: %d %d\n", decrease, fib.get(pos-3), fib.get(pos-2))
 		pos -= 2
 		if searchingLocation.Cmp(lenAB) <= 0 {
 			// fmt.Printf("Found at location: %d\n", searchingLocation.Uint64()-1)
@@ -107,29 +108,32 @@ func find(fib *Fibonnaci, A, B string, searchingLocation *big.Int) byte {
 func main() {
 	// Global
 	fib := NewFibonnaci()
+	debug := false
+	if !debug {
+		// IO
+		var quantity int
+		var A, B string
+		var n string
+		np := big.NewInt(0)
 
-	// IO
-	var quantity int
-	var A, B string
-	var n string
-	np := big.NewInt(0)
+		fmt.Scanf("%d", &quantity)
+		for i := 0; i < quantity; i++ {
+			fmt.Scanf("%s", &A)
+			fmt.Scanf("%s", &B)
+			fmt.Scanf("%s", &n)
 
-	fmt.Scanf("%d", &quantity)
-	for i := 0; i < quantity; i++ {
-		fmt.Scanf("%s", &A)
-		fmt.Scanf("%s", &B)
-		fmt.Scanf("%s", &n)
-
-		np.SetString(n, 10)
-		// Algorithm
-		fmt.Println(string(find(fib, A, B, np)))
+			np.SetString(n, 10)
+			// Algorithm
+			fmt.Println(string(find(fib, A, B, np)))
+		}
+	} else {
+		np := big.NewInt(0)
+		np.SetString("633825300114114700748351602688", 10) // 500
+		fmt.Printf("%s\n", string(find(
+			fib,
+			"a",
+			"b",
+			np,
+		)))
 	}
-
-	// fmt.Printf("%s\n", string(find(fib, "abc", "def", 49)))
-	// fmt.Printf("%s\n", string(find(
-	//   fib,
-	//   "1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679",
-	//   "8214808651328230664709384460955058223172535940812848111745028410270193852110555964462294895493038196",
-	//   big.NewInt(104683731294243150),
-	// )))
 }
