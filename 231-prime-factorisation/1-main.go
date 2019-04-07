@@ -104,25 +104,47 @@ func findDivisors(primeProcessor *Prime, n int64) []int64 {
 func main() {
 
 	var n, m, k int64
+	// NOT ALL DIVISORS FOR K2
 	n = 15
 	m = 9
-	k = 1
+	k = 3
+
+	// UNIQUE DIVISORS PROBLEM
+	// n = 16
+	// m = 3
+	// k = 1
 
 	var binCoefficient int64
 	binCoefficient = binomialCoefficient(n, m)
 	fmt.Println(binCoefficient)
 
 	primeProcessor := NewPrime()
-	divisors := findDivisors(primeProcessor, binCoefficient)
+	var divisors [4][]int64
+	// TODO unique divisors!
+	divisors[0] = findDivisors(primeProcessor, binCoefficient)
 
-	var i int64
-	var sum int64
+	// Finding divisors for k(i).
+	var ki int64
+	var j, l int64
+	for ki = 1; ki < k; ki++ {
+		// First iteration from first to (last - 1) element.
+		// First iteration use divisors from k(i - 1) and prime divisors k(0) to generate divisors for k(i).
+		for j = 0; j < int64(len(divisors[ki-1])-1); j++ {
+			// Second iteration from j + 1 to last element.
+			for l = j + ki; l < int64(len(divisors[0])); l++ {
+				fmt.Printf("M %d * %d = %d (%d) \n", divisors[ki-1][j], divisors[0][l], divisors[ki-1][j]*divisors[0][l], j)
+				divisors[ki] = append(divisors[ki], divisors[ki-1][j]*divisors[0][l])
+			}
+		}
+	}
+
+	// Summing and printing.
+	var i, sum int64
 	for i = 0; i < k; i++ {
 		sum = 0
-		for _, prime := range divisors {
-			fmt.Printf("%d \n", prime)
-			sum += prime
-			// TODO find all combinations for k > 1
+		for _, divisor := range divisors[i] {
+			// fmt.Printf("%d \n", divisor)
+			sum += divisor
 		}
 
 		fmt.Println(sum)
