@@ -83,6 +83,16 @@ func binomialCoefficient(n, m int64) int64 {
 	return factorial(n) / (factorial(m) * factorial(n-m))
 }
 
+func inArray(needle int64, haystack []int64) bool {
+	for _, val := range haystack {
+		if val == needle {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Find prime divisors of n
 func findDivisors(primeProcessor *Prime, n int64) []int64 {
 	var divisors []int64
@@ -92,58 +102,81 @@ func findDivisors(primeProcessor *Prime, n int64) []int64 {
 	for i = 0; float64(i) < math.Sqrt(float64(resultOfDivising)); i++ {
 		if resultOfDivising%primeProcessor.FindNthPrime(i) == 0 {
 			resultOfDivising /= primeProcessor.FindNthPrime(i)
-			divisors = append(divisors, primeProcessor.FindNthPrime(i))
-			i = 0
+			if !inArray(primeProcessor.FindNthPrime(i), divisors) {
+				divisors = append(divisors, primeProcessor.FindNthPrime(i))
+			}
+
+			i = -1
 		}
 	}
-	divisors = append(divisors, resultOfDivising)
 
+	if !inArray(resultOfDivising, divisors) {
+		divisors = append(divisors, resultOfDivising)
+	}
 	return divisors
 }
 
-func main() {
+func debug(format string, a ...interface{}) {
+	fmt.Printf(format, a...)
+}
 
+func main() {
 	var n, m, k int64
 	// NOT ALL DIVISORS FOR K2
-	n = 15
-	m = 9
-	k = 3
+	// n = 15
+	// m = 9
+	// k = 3
 
 	// UNIQUE DIVISORS PROBLEM
-	// n = 16
-	// m = 3
-	// k = 1
+	n = 16
+	m = 3
+	k = 1
 
 	var binCoefficient int64
 	binCoefficient = binomialCoefficient(n, m)
-	fmt.Println(binCoefficient)
+	debug("Binomial Coefficient: %d\n", binCoefficient)
 
 	primeProcessor := NewPrime()
-	var divisors [4][]int64
-	// TODO unique divisors!
-	divisors[0] = findDivisors(primeProcessor, binCoefficient)
 
+	var divisors [4][]int64
+	divisors[0] = findDivisors(primeProcessor, binCoefficient)
 	// Finding divisors for k(i).
 	var ki int64
-	var j, l int64
+	var j, l, start, primeDivisorsLen int64
+	var x, y int64
+	primeDivisorsLen = int64(len(divisors[0]))
 	for ki = 1; ki < k; ki++ {
 		// First iteration from first to (last - 1) element.
 		// First iteration use divisors from k(i - 1) and prime divisors k(0) to generate divisors for k(i).
+
+		x, y = 0, 0
 		for j = 0; j < int64(len(divisors[ki-1])-1); j++ {
 			// Second iteration from j + 1 to last element.
-			for l = j + ki; l < int64(len(divisors[0])); l++ {
-				fmt.Printf("M %d * %d = %d (%d) \n", divisors[ki-1][j], divisors[0][l], divisors[ki-1][j]*divisors[0][l], j)
+
+			start = y + ki + x
+			for l = start; l < primeDivisorsLen; l++ {
+				debug("M %d * %d = %d (j-%d y-%d) [Start at %d] \n", divisors[ki-1][j], divisors[0][l], divisors[ki-1][j]*divisors[0][l], j, y, start)
 				divisors[ki] = append(divisors[ki], divisors[ki-1][j]*divisors[0][l])
 			}
+
+			if primeDivisorsLen == start {
+				debug("hop\n")
+				x++
+				y = 0
+			} else {
+				y++
+			}
+
 		}
 	}
 
 	// Summing and printing.
+	debug("Summing up\n")
 	var i, sum int64
 	for i = 0; i < k; i++ {
 		sum = 0
 		for _, divisor := range divisors[i] {
-			// fmt.Printf("%d \n", divisor)
+			debug("S %d \n", divisor)
 			sum += divisor
 		}
 
