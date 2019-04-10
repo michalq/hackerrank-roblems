@@ -124,7 +124,7 @@ func findDivisors(primeProcessor *Prime, n int64) []int64 {
 }
 
 func debug(format string, a ...interface{}) {
-	return
+	// return
 	fmt.Printf(format, a...)
 }
 
