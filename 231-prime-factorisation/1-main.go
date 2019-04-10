@@ -155,13 +155,13 @@ func main() {
 	// Finding divisors for k(i).
 	var ki int64
 	var j, l, start, primeDivisorsLen int64
-	var x, y int64
+	var x, y, z int64
 	primeDivisorsLen = int64(len(divisors[0]))
 	for ki = 1; ki < k; ki++ {
 		// First iteration from first to (last - 1) element.
 		// First iteration use divisors from k(i - 1) and prime divisors k(0) to generate divisors for k(i).
 
-		x, y = 0, 0
+		x, y, z = 0, 0, 0
 		for j = 0; j < int64(len(divisors[ki-1])-1); j++ {
 			// Second iteration from j + 1 to last element.
 
@@ -172,11 +172,19 @@ func main() {
 			}
 
 			if primeDivisorsLen == start {
-				debug("hop\n")
-				x++
+				if primeDivisorsLen-ki == x {
+					z++
+					x = z
+				} else {
+					x++
+				}
+
+				debug("HOP j=%d x=%d y=%d ki=%d\n", j, x, y, ki)
+
 				y = 0
 			} else {
 				y++
+				debug("inc y=%d\n", y)
 			}
 
 		}
@@ -188,7 +196,7 @@ func main() {
 	for i = 0; i < k; i++ {
 		sum = 0
 		for _, divisor := range divisors[i] {
-			debug("S %d \n", divisor)
+			// debug("S %d \n", divisor)
 			sum += divisor
 		}
 
