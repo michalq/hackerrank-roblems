@@ -67,7 +67,6 @@ func (p *Prime) density(n int64) int64 {
 //
 func factorial(n int64) int64 {
 	if n < 0 {
-		fmt.Println("n must be bigger than 0")
 		return 0
 	}
 	var i, fact int64
@@ -80,7 +79,15 @@ func factorial(n int64) int64 {
 
 // See https://en.wikipedia.org/wiki/Binomial_coefficient
 func binomialCoefficient(n, m int64) int64 {
-	return factorial(n) / (factorial(m) * factorial(n-m))
+	var i int64
+	var multiplier int64
+	multiplier = 1
+	for i = m + 1; i <= n; i++ {
+		multiplier *= i
+	}
+
+	return multiplier / factorial(n-m)
+	// return factorial(n) / (factorial(m) * factorial(n-m))
 }
 
 func inArray(needle int64, haystack []int64) bool {
@@ -117,20 +124,25 @@ func findDivisors(primeProcessor *Prime, n int64) []int64 {
 }
 
 func debug(format string, a ...interface{}) {
+	return
 	fmt.Printf(format, a...)
 }
 
 func main() {
 	var n, m, k int64
-	// NOT ALL DIVISORS FOR K2
+
+	// BINOMIAL COEFFICIENT LESS THAN 0 PROBLEM
+	// n = 22
+	// m = 6
+	// k = 4
+
 	// n = 15
 	// m = 9
 	// k = 3
 
-	// UNIQUE DIVISORS PROBLEM
-	n = 16
-	m = 3
-	k = 1
+	fmt.Scanf("%d", &n)
+	fmt.Scanf("%d", &m)
+	fmt.Scanf("%d", &k)
 
 	var binCoefficient int64
 	binCoefficient = binomialCoefficient(n, m)
