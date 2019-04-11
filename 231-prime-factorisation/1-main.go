@@ -36,14 +36,6 @@ func (p *Prime) FindNthPrime(n int64) int64 {
 	}
 }
 
-func (p *Prime) IsPrime(n int64) bool {
-	// 1. First usage will generate whole array of primes to sqrt(n)
-	// 2. Next usage we will have to find density of primes density(n) which will give d
-	// 3. d means that number say 5005 have x primes
-	// 4. we can get primes[x-1] and if it is
-	return true
-}
-
 func (p *Prime) isPrime(startOn, n int64) bool {
 	if n%2 == 0 {
 		return false
@@ -60,11 +52,6 @@ func (p *Prime) isPrime(startOn, n int64) bool {
 	return true
 }
 
-func (p *Prime) density(n int64) int64 {
-	return 0
-}
-
-//
 func factorial(n int64) int64 {
 	if n < 0 {
 		return 0
@@ -78,16 +65,31 @@ func factorial(n int64) int64 {
 }
 
 // See https://en.wikipedia.org/wiki/Binomial_coefficient
-func binomialCoefficient(n, m int64) int64 {
-	var i int64
-	var multiplier int64
-	multiplier = 1
-	for i = m + 1; i <= n; i++ {
-		multiplier *= i
+func binomialCoefficient(n, k int64) int64 {
+	var res int64
+	res = 1
+
+	// Since C(n, k) = C(n, n-k)
+	if k > n-k {
+		k = n - k
 	}
 
-	return multiplier / factorial(n-m)
-	// return factorial(n) / (factorial(m) * factorial(n-m))
+	// Calculate value of [n * (n-1) *---* (n-k+1)] / [k * (k-1) *----* 1]
+	var i int64
+	for i = 0; i < k; i++ {
+		res *= (n - i)
+		res /= (i + 1)
+	}
+
+	return res
+}
+
+func min(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+
+	return b
 }
 
 func inArray(needle int64, haystack []int64) bool {
@@ -136,13 +138,30 @@ func main() {
 	// m = 6
 	// k = 4
 
-	// n = 15
-	// m = 9
-	// k = 3
+	n = 987105656
+	m = 487251344
+	k = 15
+	/*
+		304813266
+		178539329
+		329465650
+		740794633
+		570415638
+		776892677
+		744488030
+		786963472
+		27544794
+		48712826
+		766309953
+		433855695
+		442980294
+		613302929
+		773472163
+	*/
 
-	fmt.Scanf("%d", &n)
-	fmt.Scanf("%d", &m)
-	fmt.Scanf("%d", &k)
+	// fmt.Scanf("%d", &n)
+	// fmt.Scanf("%d", &m)
+	// fmt.Scanf("%d", &k)
 
 	var binCoefficient int64
 	binCoefficient = binomialCoefficient(n, m)
@@ -150,7 +169,8 @@ func main() {
 
 	primeProcessor := NewPrime()
 
-	var divisors [4][]int64
+	var divisors [][]int64
+	divisors = make([][]int64, k)
 	divisors[0] = findDivisors(primeProcessor, binCoefficient)
 	// Finding divisors for k(i).
 	var ki int64
